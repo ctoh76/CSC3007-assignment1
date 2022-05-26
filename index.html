@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html data-kantu="1"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>assignment 1</title>
+<style><!--Done by Clarence Toh-->
+    .table_design{
+        font-size: 1em;  
+    }
+    .table_design th, td{
+        border: 1px solid black;
+        padding: 0 15px;
+    }
+    body{
+        background-image: url('backgnd.jpg');
+        background-repeat:no-repeat;
+        background-size:cover;
+    }
+    .redClass{
+        background-color: red;
+    }
+</style>
+</head>
+<body>
+<div class="table_design">
+    <h1 style="text-align: center;">Singapore PSI Table</h1>
+    <h2 id = "timestamp" style="text-align: center;"></h2>
+    <table id="psiTable" style="margin-left: auto;margin-right: auto;">
+        <tbody>
+            <tr>
+                <th>Metric</th>
+                <th>National</th>
+                <th>Central</th>
+                <th>West</th>
+                <th>East</th>
+                <th>North</th>
+                <th>South</th>
+            </tr>
+        </tbody>    
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+
+fetch('https://api.data.gov.sg/v1/environment/psi')
+  .then(response => response.json())
+  .then(data => {  
+    let psi = data.items[0].readings;
+    console.log(psi);
+  });
+$.getJSON('https://api.data.gov.sg/v1/environment/psi',
+function(data){ 
+    var table = document.getElementById("psiTable");
+    var row = '';
+
+    var date = new Date(data.items[0].update_timestamp);
+    document.getElementById('timestamp').innerHTML = "Last Updated: " + date.getDate() + " " + date.toLocaleString('default', { month: 'short' }) + " " + date.getFullYear() + ", " + date.getHours() +":"+ ('0'+date.getMinutes()).slice(-2);
+
+    for (const [key, value] of Object.entries(data.items[0].readings)) {
+        console.log(key, value);
+        
+        row = table.insertRow(-1);
+        row.insertCell(0).innerHTML = key;
+        row.insertCell(1).innerHTML = value.national;
+        row.insertCell(2).innerHTML = value.central;
+        row.insertCell(3).innerHTML = value.west;
+        row.insertCell(4).innerHTML = value.east;
+        row.insertCell(5).innerHTML = value.north;
+        row.insertCell(6).innerHTML = value.south;
+    }
+});
+</script>
+
+</body></html>
